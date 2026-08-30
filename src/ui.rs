@@ -1,39 +1,33 @@
 use ratatui::{
     buffer::Buffer,
-    layout::{Alignment, Rect},
-    style::{Color, Stylize},
-    widgets::{Block, BorderType, Paragraph, Widget},
+    layout::{Constraint, Layout, Rect},
+    widgets::Widget,
 };
 
 use crate::app::App;
 
+pub mod header;
+pub mod pages {
+    pub mod home;
+}
+
+use header::Header;
+use pages::home::HomePage;
+
 impl Widget for &App {
-    /// Renders the user interface widgets.
-    ///
-    // This is where you add new widgets.
-    // See the following resources:
-    // - https://docs.rs/ratatui/latest/ratatui/widgets/index.html
-    // - https://github.com/ratatui/ratatui/tree/master/examples
     fn render(self, area: Rect, buf: &mut Buffer) {
-        let block = Block::bordered()
-            .title("creator")
-            .title_alignment(Alignment::Center)
-            .border_type(BorderType::Rounded);
+        let [header, content] =
+            Layout::vertical([Constraint::Length(3), Constraint::Min(0)]).areas(area);
 
-        let text = format!(
-            "This is a tui template.\n\
-                Press `Esc`, `Ctrl-C` or `q` to stop running.\n\
-                Press left and right to increment and decrement the counter respectively.\n\
-                Counter: {}",
-            self.counter
-        );
+        let current_tab = self.current_tab;
 
-        let paragraph = Paragraph::new(text)
-            .block(block)
-            .fg(Color::Cyan)
-            .bg(Color::Black)
-            .centered();
+        Header { app: self }.render(header, buf);
 
-        paragraph.render(area, buf);
+        match current_tab {
+            1 => HomePage { app: self }.render(content, buf),
+            2 => HomePage { app: self }.render(content, buf),
+            3 => HomePage { app: self }.render(content, buf),
+            _ => HomePage { app: self }.render(content, buf),
+        }
     }
 }
