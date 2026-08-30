@@ -20,8 +20,7 @@ impl Widget for Header<'_> {
     // - https://docs.rs/ratatui/latest/ratatui/widgets/index.html
     // - https://github.com/ratatui/ratatui/tree/master/examples
     fn render(self, area: Rect, buf: &mut Buffer) {
-        let block = Block::bordered()
-            .border_type(BorderType::Plain);
+        let block = Block::bordered().border_type(BorderType::Plain);
 
         let tabs = Tabs::new(vec!["Tab1", "Tab2", "Tab3"])
             .block(block)
