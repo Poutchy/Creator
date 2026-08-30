@@ -7,18 +7,18 @@ use ratatui::DefaultTerminal;
 pub struct App {
     /// Is the application running?
     pub running: bool,
-    /// Counter.
-    pub counter: u8,
     /// Event handler.
     pub events: EventHandler,
+    /// Current tab
+    pub current_tab: usize,
 }
 
 impl Default for App {
     fn default() -> Self {
         Self {
             running: true,
-            counter: 0,
             events: EventHandler::new(),
+            current_tab: 0,
         }
     }
 }
@@ -44,8 +44,8 @@ impl App {
                     _ => {}
                 },
                 Event::App(app_event) => match app_event {
-                    AppEvent::Increment => self.increment_counter(),
-                    AppEvent::Decrement => self.decrement_counter(),
+                    AppEvent::Left => self.go_left(),
+                    AppEvent::Right => self.go_right(),
                     AppEvent::Quit => self.quit(),
                 },
             }
@@ -60,8 +60,8 @@ impl App {
             KeyCode::Char('c' | 'C') if key_event.modifiers == KeyModifiers::CONTROL => {
                 self.events.send(AppEvent::Quit)
             }
-            KeyCode::Right => self.events.send(AppEvent::Increment),
-            KeyCode::Left => self.events.send(AppEvent::Decrement),
+            KeyCode::Right => self.events.send(AppEvent::Right),
+            KeyCode::Left => self.events.send(AppEvent::Left),
             // Other handlers you could add here.
             _ => {}
         }
@@ -79,11 +79,11 @@ impl App {
         self.running = false;
     }
 
-    pub fn increment_counter(&mut self) {
-        self.counter = self.counter.saturating_add(1);
+    pub fn go_left(&mut self) {
+        self.current_tab = (self.current_tab + 2) % 3;
     }
 
-    pub fn decrement_counter(&mut self) {
-        self.counter = self.counter.saturating_sub(1);
+    pub fn go_right(&mut self) {
+        self.current_tab = (self.current_tab + 1) % 3;
     }
 }
